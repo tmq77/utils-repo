@@ -1,0 +1,12 @@
+20:14:26.907 [main] INFO  cn.t.redis.util.RedisUtilApplication - Starting RedisUtilApplication on TMQ777 with PID 43904 (F:\workspace\redis-util\target\classes started by taomi in F:\workspace\redis-util)
+20:14:26.923 [main] INFO  cn.t.redis.util.RedisUtilApplication - No active profile set, falling back to default profiles: default
+20:14:27.480 [main] INFO  cn.t.redis.util.RedisUtilApplication - Started RedisUtilApplication in 0.975 seconds (JVM running for 1.962)
+20:15:40.676 [main] INFO  cn.t.redis.util.RedisUtilApplication - Starting RedisUtilApplication on TMQ777 with PID 37708 (F:\workspace\redis-util\target\classes started by taomi in F:\workspace\redis-util)
+20:15:40.679 [main] INFO  cn.t.redis.util.RedisUtilApplication - No active profile set, falling back to default profiles: default
+20:15:41.347 [main] INFO  cn.t.redis.util.RedisUtilApplication - Started RedisUtilApplication in 0.919 seconds (JVM running for 1.83)
+20:16:23.080 [main] INFO  cn.t.redis.util.RedisUtilApplication - Starting RedisUtilApplication on TMQ777 with PID 8248 (F:\workspace\redis-util\target\classes started by taomi in F:\workspace\redis-util)
+20:16:23.082 [main] INFO  cn.t.redis.util.RedisUtilApplication - No active profile set, falling back to default profiles: default
+20:16:23.591 [main] INFO  cn.t.redis.util.RedisUtilApplication - Started RedisUtilApplication in 0.752 seconds (JVM running for 1.631)
+20:16:37.812 [main] INFO  cn.t.redis.util.RedisUtilApplication - Starting RedisUtilApplication on TMQ777 with PID 16672 (F:\workspace\redis-util\target\classes started by taomi in F:\workspace\redis-util)
+20:16:37.815 [main] INFO  cn.t.redis.util.RedisUtilApplication - No active profile set, falling back to default profiles: default
+20:16:38.326 [main] INFO  cn.t.redis.util.RedisUtilApplication - Started RedisUtilApplication in 0.766 seconds (JVM running for 1.668)

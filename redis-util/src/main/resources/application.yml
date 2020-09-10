@@ -1,0 +1,12 @@
+spring:
+  redis:
+    host: localhost
+    port: 18379
+    password: root
+    timeout: 1000
+    database: 0 #数据库索引,使用哪个数据库
+    jedis:      pool:        max-active: 10 #连接池最大连接数（使用负值表示没有限制）   默认8
+        max-wait: 1500 #连接池最大阻塞等待时间（使用负值表示没有限制）   默认-1
+        max-idle: 8 #连接池中的最大空闲连接     默认8
+        min-idle: 0 #连接池中的最小空闲连接     默认0
+        
