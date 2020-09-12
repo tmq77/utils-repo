@@ -47,9 +47,9 @@
     在需要使用的项目的pom.xml文件中加入以下依赖即可
     
     ```xml
-<dependency>
+    <dependency>
          <groupId>cn.t.redis.util</groupId>
-     <artifactId>redis-util</artifactId>
+     	 <artifactId>redis-util</artifactId>
          <version>1.0</version>
          <scope>system</scope>
          <systemPath>${basedir}/lib/redis-util-1.0.jar</systemPath>
@@ -65,7 +65,7 @@
     - 在boot启动类的注解上指定包扫描路径,将引入的包路径加入进去,否则工具类无法初始化
     
       ```java
-      @SpringBootApplication(scanBasePackages = {"当前项目扫描路径","cn.t.redis(工具包路径)"})
+      @SpringBootApplication(scanBasePackages = {"当前项目扫描路 径","cn.t.redis(工具包路径)"})
       ```
     
     或者
@@ -90,7 +90,6 @@
          <version>1.0</version>
     </dependency>
     ```
-
 
 ---
 
