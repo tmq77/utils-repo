@@ -83,23 +83,31 @@
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
 		</dependency>
+		
+		
+		<!-- <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency> -->
+		
+		
 	</dependencies>
-
-	<build>
+	
+	 <build>
 		<plugins>
 			<plugin>
 			<!-- springboot自带的打包工具打的包不能被其他工程引用要换成apache的 -->
-			<!-- <groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId> -->
-				<groupId>org.apache.maven.plugins</groupId>
-			     <artifactId>maven-compiler-plugin</artifactId>
+			 	<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<!--  <groupId>org.apache.maven.plugins</groupId>
+			     <artifactId>maven-compiler-plugin</artifactId> -->
 			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
 					<archive>
 						<manifest>
-							<!--这里要替换成jar包main方法所在类 -->
+							<!-- 这里要替换成jar包main方法所在类 -->
 							<mainClass>cn.t.redis.RedisUtilApplication</mainClass>
 						</manifest>
 						<manifestEntries>
@@ -112,7 +120,7 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>make-assembly</id> <!-- this is used for inheritance merges -->
+						<id>make-assembly</id>
 						<phase>package</phase> <!-- 指定在打包节点执行jar包合并操作 -->
 						<goals>
 							<goal>single</goal>
@@ -120,7 +128,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			
 			<!-- 生成javadoc文档包的插件 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -152,7 +159,6 @@
                     </execution>
                 </executions>
             </plugin>
-			
 		</plugins>
 	</build>
 

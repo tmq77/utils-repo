@@ -1,6 +1,8 @@
 package cn.t.redis.util.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -15,11 +17,12 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 
+import cn.t.redis.util.RedisUtil;
 import redis.clients.jedis.JedisPoolConfig;
 
 @Configuration
+@ConditionalOnClass(RedisUtil.class)
 public class RedisConfig<T> {
-	
 
 	@Autowired
 	private ConfigProperties configProperties;
@@ -87,6 +90,15 @@ public class RedisConfig<T> {
 	}
 	
 	
+	@Bean
+	@ConditionalOnMissingBean(ConfigProperties.class)
+	public ConfigProperties configProperties() {
+		return new ConfigProperties();
+	}
 	
-
+	@Bean
+	@ConditionalOnMissingBean(RedisUtil.class)
+	public RedisUtil redisUtil() {
+		return new RedisUtil();
+	}
 }
