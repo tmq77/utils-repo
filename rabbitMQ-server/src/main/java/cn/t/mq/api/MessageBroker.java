@@ -137,9 +137,6 @@ public class MessageBroker {
 
 			this.rabbitTemplate.convertAndSend(this.mqProperties.getTopicExchange(), this.mqProperties.getQueueManual(),
 					user, data);
-
-			System.out.println("消息发送完成,等待消费者确认");
-
 			resultMap.put("result", "success");
 		} catch (Exception e) {
 			e.printStackTrace();

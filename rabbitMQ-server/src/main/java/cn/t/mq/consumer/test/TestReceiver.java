@@ -53,9 +53,7 @@ public class TestReceiver {
 			System.out.println("接收到消息的消息来自:" + message.getMessageProperties().getConsumerQueue());
 			System.out.println("消费者收到消息  : " + message);
 			// Jackson2JsonMessageConverter这个转换器是SpringBoot-amqp提供的消息转换类
-			System.out.println("转换回原来的对象:" + new Jackson2JsonMessageConverter().fromMessage(message));
-			System.out.println(
-					"转换回原来的对象并取出属性:" + ((User) new Jackson2JsonMessageConverter().fromMessage(message)).getName());
+			System.out.println("转换回原来的对象:" + (List<?>)new Jackson2JsonMessageConverter().fromMessage(message));
 
 			System.out.println("messageId:" + message.getMessageProperties().getMessageId());
 			if (message.getMessageProperties().getMessageId() == null) {
