@@ -420,7 +420,7 @@ public class RedisUtil {
 	 * @param values 值
 	 * @return true:成功 | false:失败
 	 */
-	public boolean setAllListR(String key, List<? extends Object> values) {
+	public boolean setListRAll(String key, List<? extends Object> values) {
 		try {
 			this.objecTemplate.opsForList().rightPushAll(key, values);
 			return true;

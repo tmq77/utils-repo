@@ -1,0 +1,49 @@
+spring:
+  application:
+     name: rabbitMQ-server
+  rabbitmq:
+     #spring.rabbitmq.template.mandatory=true 触发回调函数,无论消息推送结果怎么样都强制调用回调函数
+     #template:
+      #mandatory: true
+     host: 127.0.0.1
+     #15672是web端管理端口
+     #5672是默认服务端口
+     port: 18672 
+     username: tmq
+     password: tmq
+        #虚拟host 可以不设置,使用server默认host(/)
+     virtualHost: /cn.tmq
+        #是否触发回调方法(ConfirmCallback)
+     #Confirm模式只管有无投递到exchange，而不管有无发送到队列当中
+     publisherConfirmType: correlated   #默认是none, 还有一个simple,一般使用correlated(发布消息成功到交换器后会触发回调方法)
+        #开启返回模式,当消息未投递到queue时的反馈(ReturnCallback)
+     publisherReturns: true
+     listener:
+      # 直连模式并不能解决Channel.close异常,可能是因为本项目用的是topic模式
+      #direct:
+        #acknowledge-mode: MANUAL
+      simple:
+                       #重试次数超过下面的设置之后是否丢弃（false:不丢弃 需要写相应代码将该消息加入死信队列）
+        default-requeue-rejected: false 
+                      #设置手动确认，不设置的情况下消息达到消费者后就会自动确认,然后channel就会关闭,抛出Channel.close异常
+        acknowledge-mode: MANUAL  
+        retry:
+          enabled: true  #开启重试(程序出现异常的情况下会,捕获异常重试将不生效)
+          max-attempts: 3 #最大重试次数
+          max-interval: 15000ms  #默认10000ms  最大重试的总时间,大于这个值则使用这个值
+          initial-interval: 3000ms #最大重试间隔 每次重试之间的时间间隔
+          multiplier: 2 #乘数因子 第一次重试在第3秒处,第二次 2*3 => 6秒处，以此类推，如果总时间大于最大重试时间，则最终的时间为最大重试时间
+  redis:
+    port: 18379
+    password: root
+        
+server:
+  port: 8088
+  servlet:
+    context-path: /messageBroker/
+    
+
+     
+        
+        
+        

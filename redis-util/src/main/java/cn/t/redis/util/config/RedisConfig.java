@@ -55,6 +55,12 @@ public class RedisConfig<T> {
 	    // RedisSentinelConfiguration redisConfig = new RedisSentinelConfiguration();
 	    // 集群Redis
 	    // RedisClusterConfiguration redisConfig = new RedisClusterConfiguration();
+	    System.out.println("_____________Redis Configuration Info_______________");
+	    System.out.println("Redis Host:" + this.configProperties.getHost());
+	    System.out.println("Redis Port:" + this.configProperties.getPort());
+	    System.out.println("Redis DB Index:" + this.configProperties.getDatabase());
+	    System.out.println("Redis Password:" + this.configProperties.getPassword());
+	    
 	    return connectionFactory;
 	}
 	
