@@ -10,7 +10,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 序列号相关工具类<br/>
@@ -35,9 +38,15 @@ public class SerializationUtil {
 	private static final String EXTENSION_NM = ".ser";
 
 	public static void main(String[] args) throws Exception {
-		String path = "tmq.xxx";
-		
-		serializeObj("aaaaa", path);
+		String path = "list.ser";
+		// ArrayList实现了序列化接口， 但是List接口并没有实现，所以这里使用ArrayList
+		ArrayList<String> list1 = new ArrayList<>(Arrays.asList(new String[] { "aaa", "bbb", "ccc" }));
+		serializeObj(list1, path);
+
+		// 这里使用?通配符来转换泛型对象以消除警告，但是这个?表示List中放的是任意元素, 这个List是任意List的父类，导致这个List只能读不能写
+		List<?> list2 = deserializeObj(FOLDER_NM + path);
+
+		System.out.println(list2);
 	}
 
 	/**
@@ -96,7 +105,8 @@ public class SerializationUtil {
 	}
 
 	/**
-	 * 序列号对象到文件(当前目录下)
+	 * 序列号对象到文件(当前目录下)<br/>
+	 * 如果需要序列化多个对象到一个文件,建议使用ArrayList来完成
 	 * 
 	 * @param <T> 对象类型
 	 * @param obj 序列化到文件的对象
@@ -108,7 +118,8 @@ public class SerializationUtil {
 	}
 
 	/**
-	 * 序列号对象到文件(指定目录)
+	 * 序列号对象到文件(指定目录)<br/>
+	 * 如果需要序列化多个对象到一个文件,建议使用ArrayList来完成
 	 * 
 	 * @param <T>      对象类型
 	 * @param obj      序列化到文件的对象
@@ -139,14 +150,14 @@ public class SerializationUtil {
 			// case1: 空路径
 			path = FOLDER_NM + idGenerator() + EXTENSION_NM;
 		} else {
-			// 替换掉文件名中非法的./ ../ .\ ..\  最终的目录都会在指定的前缀文件夹中
+			// 替换掉文件名中非法的./ ../ .\ ..\ 最终的目录都会在指定的前缀文件夹中
 			filePath = filePath.replaceAll("[\\.]+/|[\\.]+\\\\", "");
-			
+
 			int index = filePath.lastIndexOf("/");
 			if (index == -1) {
 				index = filePath.lastIndexOf("\\");
 			}
-			
+
 			// 截取文件夹的名字
 			if (index != -1) {
 				file = new File(FOLDER_NM + filePath.substring(0, index));
@@ -154,13 +165,13 @@ public class SerializationUtil {
 					file.mkdirs();
 				}
 			}
-			
+
 			if (filePath.contains(".")) {
 				// case2: 给定了文件名
 				path = FOLDER_NM + filePath;
 			} else {
 				// case3: 只给了一个目录 例如 tmp tmp/ /tmp
-				path = FOLDER_NM + filePath +  "/" + idGenerator() + EXTENSION_NM;
+				path = FOLDER_NM + filePath + "/" + idGenerator() + EXTENSION_NM;
 			}
 		}
 		file = new File(path);
