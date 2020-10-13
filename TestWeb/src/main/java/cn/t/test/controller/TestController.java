@@ -23,6 +23,7 @@ public class TestController {
 	@Autowired
 	private RedisUtil redisUtil;
 
+	
 	@PostMapping("/hello")
 	public Map<String, Object> hello() {
 		Map<String, Object> resultMap = new HashMap<>();
@@ -30,6 +31,10 @@ public class TestController {
 		return resultMap;
 	}
 	
+	/**
+	 * 获取Token
+	 * @return
+	 */
 	@PostMapping("/token")
 	public String getToken() {
 		Token token = JwtUtil.createTokenByHS256(120 * 1000);
@@ -40,6 +45,10 @@ public class TestController {
 		return token.getToken();
 	}
 	
+	/**
+	 * 显示Token
+	 * @return
+	 */
 	@PostMapping("/showToken")
 	@SkipToken
 	public String showToken() {
@@ -50,6 +59,12 @@ public class TestController {
 		return token.toString();
 	}
 	
+	/**
+	 * 将对象序列化到文件
+	 * @param path
+	 * @return
+	 * @throws Exception
+	 */
 	@PostMapping("/testSerialization")
 	@SkipToken
 	public String testSerialization(@RequestParam("path") String path) throws Exception {
@@ -62,6 +77,12 @@ public class TestController {
 		return "序列化完成:文件路径为:" + SerializationUtil.serializeObj(copy, path);
 	}
 	
+	/**
+	 * 将对象从文件中反序列化出来
+	 * @param path
+	 * @return
+	 * @throws Exception
+	 */
 	@PostMapping("/testDeserialization")
 	@SkipToken
 	public Object testDeserialization(@RequestParam("path") String path) throws Exception {
