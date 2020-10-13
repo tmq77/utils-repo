@@ -40,6 +40,7 @@
 			</exclusions>
 		</dependency>
 		<dependency>
+			<!-- redis util使用的是spring的maven插件,所以打包时用的install安装到本地仓库,直接引入即可 -->
 		    <groupId>cn.t.redis.util</groupId>
 		    <artifactId>redis-util</artifactId>
 		    <version>1.0</version>
@@ -53,6 +54,14 @@
 		    <version>1.0</version>
 		    <scope>system</scope>
 		    <systemPath>${basedir}/lib/jwt-util-1.0.jar</systemPath>
+		</dependency>
+		
+		<dependency>
+		    <groupId>cn.t.serialization.util</groupId>
+		    <artifactId>serialization-util</artifactId>
+		    <version>1.0</version>
+		    <scope>system</scope>
+		    <systemPath>${basedir}/lib/serialization-util-1.0.jar</systemPath>
 		</dependency>
 	</dependencies>
 

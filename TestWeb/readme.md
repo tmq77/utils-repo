@@ -8,6 +8,12 @@
 
 2. jwt-util
 
+   > jwt token工具包
+
+3. serialization-util
+
+   > 序列化对象到文件,对象深拷贝的工具包
+
 
 
 

@@ -7,12 +7,15 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.t.jwt.util.JwtUtil;
 import cn.t.jwt.util.annotation.SkipToken;
 import cn.t.jwt.util.token.Token;
 import cn.t.redis.util.RedisUtil;
+import cn.t.serialization.util.SerializationUtil;
+import cn.t.test.bean.Pojo;
 
 @RestController
 public class TestController {
@@ -46,4 +49,26 @@ public class TestController {
 		}
 		return token.toString();
 	}
+	
+	@PostMapping("/testSerialization")
+	@SkipToken
+	public String testSerialization(@RequestParam("path") String path) throws Exception {
+		Pojo obj = new Pojo();
+		obj.setName("tmq");
+		obj.setId("1111111");
+		
+		Pojo copy = SerializationUtil.cloneObj(obj);
+		
+		return "序列化完成:文件路径为:" + SerializationUtil.serializeObj(copy, path);
+	}
+	
+	@PostMapping("/testDeserialization")
+	@SkipToken
+	public Object testDeserialization(@RequestParam("path") String path) throws Exception {
+		
+		Pojo obj = SerializationUtil.deserializeObj(path);
+		return obj;
+	}
+	
+	
 }
