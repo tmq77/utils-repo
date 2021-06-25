@@ -10,9 +10,9 @@ public class App
 {
     public static void main(String[] args) throws InterruptedException
     {
-        Token token = JwtUtil.createTokenByHS256(1200);
+        Token token = JwtUtil.createTokenByHS256(1200, "tmq");
         System.out.println(token.getToken());
         Thread.sleep(1100);
-        System.out.println(JwtUtil.verifyTokenByHS256(token.getToken()));
+        System.out.println(JwtUtil.verifyTokenByHS256(token.getToken(), "tmq"));
     }
 }
