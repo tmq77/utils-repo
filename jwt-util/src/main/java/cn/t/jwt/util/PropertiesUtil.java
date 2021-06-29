@@ -35,12 +35,29 @@ public class PropertiesUtil {
    * @param key properties文件中的key值
    * @return 读取的值
    */
-  public  String readValue(String key) {
+  public String readValue(String key) {
     try {
       return this.resBundle.getString(key);
     } catch (MissingResourceException e) {
       return null;
     }
   }
-
+  
+  /**
+   * 
+   * @param key properties文件中的key值
+   * @return 读取的值
+   */
+  public long readValueAsLong(String key) {
+    return Long.valueOf(this.resBundle.getString(key));
+  }
+  
+  /**
+   * 
+   * @param key properties文件中的key值
+   * @return 读取的值
+   */
+  public int readValueAsInt(String key) {
+    return Integer.valueOf(this.resBundle.getString(key));
+  }
 }
