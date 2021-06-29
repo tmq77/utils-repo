@@ -132,7 +132,8 @@ public final class JwtUtil {
 	///////////////////////////////////////////////////////////////////////////////
 	/**
 	 * 使用RSA256方式创建Token
-	 * 
+	 * When using RSA or ECDSA algorithms and you just need to sign JWTs you can avoid specifying a Public Key by passing a null value. 
+	 * The same can be done with the Private Key when you just need to verify JWTs.
 	 * @param <T>
 	 * 
 	 * @param expireTs 超时时间(millisecond)
