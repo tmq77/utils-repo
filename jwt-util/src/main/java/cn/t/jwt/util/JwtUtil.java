@@ -250,5 +250,91 @@ public final class JwtUtil {
 			return new Token(null, e.getMessage(), true);
 		}
 	}
+	
+        /**
+	 * 指定Id和过期时间创建Token
+	 * @param keyPair 密钥对
+	 * @param userId 用户Id
+	 * @param expireTs 过期时间
+	 * @return
+	 */
+	 public static Token createTokenByRSA256(RSAKeyPair keyPair, String userId, long expireTs) {
+	    try {
+	      // Algorithm algorithm = Algorithm.RSA256(keyPair.getPublicKeyOrigin(), keyPair.getPrivateKeyOrigin());
+	      // 使用私钥加密,只能使用公钥或者私钥解密
+	      Algorithm algorithm = Algorithm.RSA256(null, keyPair.getPrivateKeyOrigin());
+
+	      if (expireTs < 0 || expireTs == 0) {
+		expireTs = System.currentTimeMillis() + (30 * 60 * 1000);
+	      } else {
+		expireTs += System.currentTimeMillis();
+	      }
+
+	      String token = JWT.create().withJWTId(userId).withNotBefore(new Date()).withExpiresAt(new Date(expireTs)).sign(algorithm);
+	      // 进行Base64编码
+	      return new Token(Base64.getEncoder().encodeToString(token.getBytes(RSAKeyGenerator.CHARSET)), "create success", false);
+	    } catch (JWTCreationException e) {
+	      // Invalid Signing configuration / Couldn't convert Claims.
+	      return new Token(null, e.getMessage(), true);
+	    } catch (Exception e) {
+	      return new Token(null, e.getMessage(), true);
+	    }
+	  }
+
+	  /**
+	   * 指定Id创建Token
+	   * @param keyPair 密钥对
+	   * @param userId 用户Id
+	   * @param expireTs 过期时间
+	   * @return
+	   */
+	  public static Token createTokenByRSA256(RSAKeyPair keyPair, String userId) {
+	    try {
+	      // Algorithm algorithm = Algorithm.RSA256(keyPair.getPublicKeyOrigin(), keyPair.getPrivateKeyOrigin());
+	      // 使用私钥加密,只能使用公钥或者私钥解密
+	      Algorithm algorithm = Algorithm.RSA256(null, keyPair.getPrivateKeyOrigin());
+	      // 30min
+	      long expireTs = System.currentTimeMillis() + (30 * 60 * 1000);
+
+	      String token = JWT.create().withJWTId(userId).withNotBefore(new Date()).withExpiresAt(new Date(expireTs)).sign(algorithm);
+	      // 进行Base64编码
+	      return new Token(Base64.getEncoder().encodeToString(token.getBytes(RSAKeyGenerator.CHARSET)), "create success", false);
+	    } catch (JWTCreationException e) {
+	      // Invalid Signing configuration / Couldn't convert Claims.
+	      return new Token(null, e.getMessage(), true);
+	    } catch (Exception e) {
+	      return new Token(null, e.getMessage(), true);
+	    }
+	  }
+
+	  /**
+	   * 使用RSA256方式验证
+	   * @param token 
+	   * @param publicKey
+	   * 
+	   */
+	  public static Token verifyTokenByRSA256(String token, RSAPublicKey publicKey) {
+
+	    try {
+	      Algorithm algorithm = Algorithm.RSA256(publicKey, null);
+
+	      JWTVerifier verifier = JWT.require(algorithm)
+		      // 过期时间窗口 预留1秒
+		      .acceptExpiresAt(1)
+		      // 签发时间窗口 预留1秒
+		      .acceptIssuedAt(1)
+		      // not before窗口, 预留3分钟,早于系统日三分钟的token被认为不合法
+		      .acceptNotBefore(180)
+		      .build(); //Reusable verifier instance
+		  DecodedJWT jwt = verifier.verify(new String(Base64.getDecoder().decode(token), RSAKeyGenerator.CHARSET));
+		 System.out.println(jwt.getExpiresAt().getTime());
+	      return new Token(token, "verify success", false);
+	    } catch (JWTVerificationException e) {
+	      // Invalid signature/claims
+	      return new Token(null, e.getMessage(), true);
+	    } catch (Exception e) {
+	      return new Token(null, e.getMessage(), true);
+	    }
+	  }
 
 }
