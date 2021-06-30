@@ -318,16 +318,9 @@ public final class JwtUtil {
 	    try {
 	      Algorithm algorithm = Algorithm.RSA256(publicKey, null);
 
-	      JWTVerifier verifier = JWT.require(algorithm)
-		      // 过期时间窗口 预留1秒
-		      .acceptExpiresAt(1)
-		      // 签发时间窗口 预留1秒
-		      .acceptIssuedAt(1)
-		      // not before窗口, 预留3分钟,早于系统日三分钟的token被认为不合法
-		      .acceptNotBefore(180)
-		      .build(); //Reusable verifier instance
-		  DecodedJWT jwt = verifier.verify(new String(Base64.getDecoder().decode(token), RSAKeyGenerator.CHARSET));
-		 System.out.println(jwt.getExpiresAt().getTime());
+              JWTVerifier verifier = JWT.require(algorithm).build(); //Reusable verifier instance
+              DecodedJWT jwt = verifier.verify(new String(Base64.getDecoder().decode(token), RSAKeyGenerator.CHARSET));
+	      System.out.println(jwt.getExpiresAt().getTime());
 	      return new Token(token, "verify success", false);
 	    } catch (JWTVerificationException e) {
 	      // Invalid signature/claims
