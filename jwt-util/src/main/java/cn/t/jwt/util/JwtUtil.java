@@ -13,6 +13,7 @@ import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
@@ -281,13 +282,47 @@ public final class JwtUtil {
       return new Token(null, e.getMessage(), true);
     }
   }
+  
+  /**
+   * 指定Id和过期时间已经用户详细创建Token
+   * 
+   * @param keyPair  密钥对
+   * @param userId   用户Id
+   * @param userDetails spring security 用户详细信息(json字符串)
+   * @param expireTs 过期时间
+   * @return
+   */
+  public static Token createTokenByRSA256(RSAKeyPair keyPair, String userId, String userDetails, long expireTs) {
+    try {
+      // Algorithm algorithm = Algorithm.RSA256(keyPair.getPublicKeyOrigin(),
+      // keyPair.getPrivateKeyOrigin());
+      // 使用私钥加密,只能使用公钥或者私钥解密
+      Algorithm algorithm = Algorithm.RSA256(null, keyPair.getPrivateKeyOrigin());
+
+      if (expireTs < 0 || expireTs == 0) {
+        expireTs = System.currentTimeMillis() + (30 * 60 * 1000);
+      } else {
+        expireTs += System.currentTimeMillis();
+      }
+      
+      String token = JWT.create().withJWTId(userId).withNotBefore(new Date()).withExpiresAt(new Date(expireTs)).withClaim(userId, userDetails)
+          .sign(algorithm);
+      // 进行Base64编码
+      return new Token(Base64.getEncoder().encodeToString(token.getBytes(RSAKeyGenerator.CHARSET)), "create success",
+          false);
+    } catch (JWTCreationException e) {
+      // Invalid Signing configuration / Couldn't convert Claims.
+      return new Token(null, e.getMessage(), true);
+    } catch (Exception e) {
+      return new Token(null, e.getMessage(), true);
+    }
+  }
 
   /**
    * 指定Id创建Token
    * 
    * @param keyPair  密钥对
    * @param userId   用户Id
-   * @param expireTs 过期时间
    * @return
    */
   public static Token createTokenByRSA256(RSAKeyPair keyPair, String userId) {
@@ -384,6 +419,20 @@ public final class JwtUtil {
       return new Token(null, e.getMessage(), true);
     } catch (Exception e) {
       return new Token(null, e.getMessage(), true);
+    }
+  }
+  
+  /**
+   * 解析token
+   * @param token
+   * @return
+   */
+  public static DecodedJWT parseToken(String token) {
+    try {
+      DecodedJWT jwt = JWT.decode(token);
+      return jwt;
+    } catch (JWTDecodeException e) {
+      return null;
     }
   }
 }
