@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import cn.t.auth.constant.AuthConstant;
+import cn.t.auth.entity.JwtGrantedAuthority;
 import cn.t.auth.entity.JwtUserDetail;
 
 public class JwtUserDetailsService implements UserDetailsService {
@@ -29,13 +28,13 @@ public class JwtUserDetailsService implements UserDetailsService {
 	
 	// TODO
 	/**
-	 * 创建权限
+	 * 鍒涘缓鏉冮檺
 	 * @return
 	 */
-	private List<GrantedAuthority> getAuthorities() {
-		List<GrantedAuthority> authorities = new ArrayList<>();
+	private List<JwtGrantedAuthority> getAuthorities() {
+		List<JwtGrantedAuthority> authorities = new ArrayList<>();
 		
-		SimpleGrantedAuthority auth = new SimpleGrantedAuthority(AuthConstant.PREFIX_ROLE + "admin");
+		JwtGrantedAuthority auth = new JwtGrantedAuthority(AuthConstant.PREFIX_ROLE + "admin");
 		
 		authorities.add(auth);
 		

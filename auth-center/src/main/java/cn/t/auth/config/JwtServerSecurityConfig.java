@@ -58,8 +58,9 @@ public class JwtServerSecurityConfig extends WebSecurityConfigurerAdapter {
 
     // add filter this method will not overwrite the default
     // UsernamePasswordAuthenticationFilter
-    // 设置拦截的登录url
-    JwtLoginFilter loginFilter = new JwtLoginFilter("/auth/login");
+    // 设置拦截的登录url(注意:这里的url需要去除properties文件中配置的server.servlet.context-path前缀, 否则会匹配不到)
+    JwtLoginFilter loginFilter = new JwtLoginFilter("/login");
+    // loginFilter.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login", "POST"));
     // 需要显示指定manager,否则会报authenticationManager must be specified的异常
     loginFilter.setAuthenticationManager(super.authenticationManager());
     // 验证成功处理器

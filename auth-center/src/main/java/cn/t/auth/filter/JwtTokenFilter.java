@@ -48,10 +48,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 		ResponseUtil.setResponse(response);
 		AuthResponse res = new AuthResponse();
 		try {
-			String header = request.getHeader("Authorization");
+			String header = request.getHeader(AuthConstant.HEAD_AUTHORIZATION);
 			if (header == null || header.trim().isEmpty() || !header.startsWith(AuthConstant.PREFIX_BEARER)) {
+				res.setCode(HttpStatus.FORBIDDEN.value());
 				res.setStatus(HttpStatus.FORBIDDEN);
 				res.setMsg(AuthConstant.MSG_NO_ACCESS);
+				ResponseUtil.write(response, this.objectMapper.writeValueAsString(res));
 				return;
 			}
 
@@ -59,8 +61,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 			Token result = JwtUtil.verifyTokenByRSA256(token, this.keyStore.getPublicKey());
 
 			if (result.isError()) {
+				res.setCode(HttpStatus.FORBIDDEN.value());
 				res.setStatus(HttpStatus.FORBIDDEN);
 				res.setMsg(AuthConstant.MSG_NO_ACCESS);
+				ResponseUtil.write(response, this.objectMapper.writeValueAsString(res));
 				return;
 			}
 
@@ -77,7 +81,14 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 			filterChain.doFilter(request, response);
 
 		} catch (BadCredentialsException e) {
+			e.printStackTrace();
 			throw e;
+		} catch (Exception e) {
+			e.printStackTrace();
+			res.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+			res.setMsg(AuthConstant.MSG_SYS_ERROR);
+			ResponseUtil.write(response, this.objectMapper.writeValueAsString(res));
 		}
 	}
 }
