@@ -15,6 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import cn.t.auth.constant.AuthConstant;
 import cn.t.auth.entity.JwtAccessToken;
 import cn.t.auth.entity.JwtUserDetail;
 import cn.t.auth.response.AuthResponse;
@@ -35,8 +36,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
 	private KeyStore keyStore;
 
-	private String TOKEN_PREFIX = "Bearer ";
-
 	public JwtTokenFilter(ObjectMapper objectMapper, KeyStore keyStore) {
 		this.keyStore = keyStore;
 		this.objectMapper = objectMapper;
@@ -50,18 +49,18 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 		AuthResponse res = new AuthResponse();
 		try {
 			String header = request.getHeader("Authorization");
-			if (header == null || header.trim().isEmpty() || !header.startsWith(TOKEN_PREFIX)) {
+			if (header == null || header.trim().isEmpty() || !header.startsWith(AuthConstant.PREFIX_BEARER)) {
 				res.setStatus(HttpStatus.FORBIDDEN);
-				res.setMsg("NO ACCESS");
+				res.setMsg(AuthConstant.MSG_NO_ACCESS);
 				return;
 			}
 
-			String token = header.replace(TOKEN_PREFIX, "");
+			String token = header.replace(AuthConstant.PREFIX_BEARER, "");
 			Token result = JwtUtil.verifyTokenByRSA256(token, this.keyStore.getPublicKey());
 
 			if (result.isError()) {
 				res.setStatus(HttpStatus.FORBIDDEN);
-				res.setMsg("NO ACCESS");
+				res.setMsg(AuthConstant.MSG_NO_ACCESS);
 				return;
 			}
 

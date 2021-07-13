@@ -101,6 +101,10 @@ public class JwtServerSecurityConfig extends WebSecurityConfigurerAdapter {
     return new JwtTokenFilter(this.objectMapper, keyStore());
   }
   
+  /**
+   * 认证处理详细
+   * @return
+   */
   @Bean
   public JwtUserDetailsService jwtUserDetailsService() {
     return new JwtUserDetailsService();

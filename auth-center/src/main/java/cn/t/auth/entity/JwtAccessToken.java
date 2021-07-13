@@ -5,6 +5,11 @@ import java.util.Collection;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
+/**
+ * 保存当前用户的信息的AbstractAuthenticationToken实现类
+ * @author TMQ
+ *
+ */
 public class JwtAccessToken extends AbstractAuthenticationToken {
 
   private static final long serialVersionUID = 6904661818241572358L;
