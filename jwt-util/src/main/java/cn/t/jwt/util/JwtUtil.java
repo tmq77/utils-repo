@@ -461,6 +461,79 @@ public final class JwtUtil {
       return new Token(null, e.getMessage(), true);
     }
   }
+  
+  /**
+   * 指定Id和过期时间已经用户详细创建Token
+   * 
+   * @param privateKey     私钥
+   * @param userId      用户Id
+   * @param userDetails spring security 用户详细信息(json字符串)
+   * @param expireTs    过期时间(ms)
+   * @return
+   */
+  public static Token createTokenByRSA256(String privateKey, String userId, String userDetails, long expireTs) {
+    try {
+      // RSAKeyPair keyPair
+      // Algorithm algorithm = Algorithm.RSA256(keyPair.getPublicKeyOrigin(),
+      // keyPair.getPrivateKeyOrigin());
+      // 使用私钥加密,只能使用公钥或者私钥解密
+      Algorithm algorithm = Algorithm.RSA256(null, RSAKeyGenerator.convertToPrivateKey(privateKey));
+
+      if (expireTs < 0 || expireTs == 0) {
+        expireTs = System.currentTimeMillis() + (30 * 60 * 1000);
+      } else {
+        expireTs += System.currentTimeMillis();
+      }
+
+      String token = JWT.create().withJWTId(userId).withNotBefore(new Date()).withExpiresAt(new Date(expireTs))
+          .withClaim(userId, userDetails).sign(algorithm);
+      // 进行Base64编码
+      return new Token(Base64.getEncoder().encodeToString(token.getBytes(RSAKeyGenerator.CHARSET)), "create success",
+          false);
+    } catch (JWTCreationException e) {
+      // Invalid Signing configuration / Couldn't convert Claims.
+      return new Token(null, e.getMessage(), true);
+    } catch (Exception e) {
+      return new Token(null, e.getMessage(), true);
+    }
+  }
+  
+  /**
+   * 指定Id和过期时间已经用户详细创建Token
+   * 
+   * @param privateKey     私钥
+   * @param userId      用户Id
+   * @param userDetails spring security 用户详细信息(json字符串)
+   * @param expireTs    过期时间(s)
+   * @return
+   */
+  public static Token createTokenByRSA256(String privateKey, String userId, String userDetails, int expireTs) {
+    try {
+      // RSAKeyPair keyPair
+      // Algorithm algorithm = Algorithm.RSA256(keyPair.getPublicKeyOrigin(),
+      // keyPair.getPrivateKeyOrigin());
+      // 使用私钥加密,只能使用公钥或者私钥解密
+      Algorithm algorithm = Algorithm.RSA256(null, RSAKeyGenerator.convertToPrivateKey(privateKey));
+
+      if (expireTs < 0 || expireTs == 0) {
+        expireTs = 30 * 60;
+      }
+      
+      Calendar expc = Calendar.getInstance();
+      expc.add(Calendar.SECOND, expireTs);
+
+      String token = JWT.create().withJWTId(userId).withNotBefore(new Date()).withExpiresAt(expc.getTime())
+          .withClaim(userId, userDetails).sign(algorithm);
+      // 进行Base64编码
+      return new Token(Base64.getEncoder().encodeToString(token.getBytes(RSAKeyGenerator.CHARSET)), "create success",
+          false);
+    } catch (JWTCreationException e) {
+      // Invalid Signing configuration / Couldn't convert Claims.
+      return new Token(null, e.getMessage(), true);
+    } catch (Exception e) {
+      return new Token(null, e.getMessage(), true);
+    }
+  }
 
   /**
    * 指定Id创建Token
@@ -613,3 +686,102 @@ public final class JwtUtil {
     }
   }
 }
+ific Claim values, use the builder to define them. The
+   * instance returned by the method build() is reusable, so you can define it
+   * once and use it to verify different tokens. Finally call verifier.verify()
+   * passing the token.
+   */
+  @Deprecated
+  public static Token verifyTokenByHS256(String token, String userId) {
+    try {
+      Algorithm algorithm = Algorithm.HMAC256(HS256_SECRET);
+      // Reusable verifier instance
+      JWTVerifier jWTVerifier = JWT.require(algorithm).withJWTId(userId).withIssuer("cn.t.jwt") // 验证签发者
+          .withClaim("cn.t.cust", "t") // 验证自定义声明
+          // 在JWTVerifier builder中使用accept回旋()方法，并传递一个正值的秒值 可以延长过期时间，创造回旋余地
+          // .acceptLeeway(1) // 1 sec for nbf, iat and exp
+          // nbf:Not Before 的缩写，表示 JWT Token 在这个时间之前是无效的
+          // iat：签发时间
+          // exp： 过期时间
+          // .acceptExpiresAt(5) // 5 secs for exp
+          .build();
+      // 验证,未抛出异常则认证通过
+      // 使用BASE64解密再验证
+      DecodedJWT jwt = jWTVerifier.verify(new String(Base64.getDecoder().decode(token), RSAKeyGenerator.CHARSET));
+      // 可以使用jwt.getXXX获取Token中的各项信息
+      System.out.println(jwt.getIssuer());
+
+      return new Token(token, "", false);
+    } catch (JWTVerificationException e) {
+      // Invalid signature/claims
+      return new Token(null, e.getMessage(), true);
+    } catch (Exception e) {
+      return new Token(null, e.getMessage(), true);
+    }
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////
+  /**
+   * 使用RSA256方式创建Token
+   * 
+   * @param <T>
+   * 
+   * @param expireTs 超时时间(millisecond)
+   * @param claims   自定义信息
+   * @param keyPair  密钥对
+   * @return 创建的Token
+   */
+  public static <T> Token createTokenByRSA256(JwtCustomClaim<T> claims, RSAKeyPair keyPair) {
+
+    try {
+      // Algorithm algorithm = Algorithm.RSA256(keyPair.getPublicKeyOrigin(),
+      // keyPair.getPrivateKeyOrigin());
+      // 使用私钥加密,只能使用公钥或者私钥解密
+      Algorithm algorithm = Algorithm.RSA256(null, keyPair.getPrivateKeyOrigin());
+      JWTCreator.Builder jwtBuilder = JWT.create();
+
+      // 头部信息
+      jwtBuilder.withHeader(claims.getHeaderClaims());
+
+      if (JwtStringUtil.isNotEmpty(claims.getSubject())) {
+        jwtBuilder.withSubject(claims.getSubject());
+      }
+
+      // Tid Token唯一标志
+      if (JwtStringUtil.isNotEmpty(claims.getTid())) {
+        jwtBuilder.withJWTId(claims.getTid());
+      }
+
+      // 签发人
+      if (JwtStringUtil.isNotEmpty(claims.getIssuer())) {
+        jwtBuilder.withIssuer(claims.getIssuer());
+      }
+
+      long ts = System.currentTimeMillis();
+      Date issueAt = new Date(ts);
+      // 30分钟后过期
+      Date expireAt = new Date(ts + 1000 * 60 * 30);
+
+      // 签发时间
+      if (claims.getIssuedAt() != null) {
+        jwtBuilder.withIssuedAt(claims.getIssuedAt());
+      } else {
+        jwtBuilder.withIssuedAt(issueAt);
+      }
+
+      // 过期时间
+      if (claims.getExpiresAt() != null) {
+        jwtBuilder.withExpiresAt(claims.getExpiresAt());
+      } else {
+        jwtBuilder.withExpiresAt(expireAt);
+      }
+
+      // 自定义权限List
+      if (claims.getRoleList() != null && claims.getRoleList().size() > 0) {
+        jwtBuilder.withClaim("roles", claims.getRoleList());
+      }
+
+      // 自定义声明
+      if (claims.getCustomStringClaim() != null && claims.getCustomStringClaim().size() > 0) {
+        for (Entry<String, String> entry : claims.getCustomStringClaim().entrySet()) {
+          jwtBuilder.withClaim(entry.getKey(), entry.getValue
